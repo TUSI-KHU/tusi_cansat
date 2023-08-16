@@ -1,0 +1,59 @@
+///////////////////////////////// UV Light
+int gasSensor = A0;
+String text1; 
+
+void setup() {
+  // 시리얼 포트 초기화
+  Serial.begin(9600);
+  while(!Serial){}
+  pinMode(gasSensor, INPUT);
+}
+
+void loop() {
+  /*
+  if (Serial.available()) {
+        char data = Serial.read();
+        Serial.write(data);
+  }
+  */
+  // 정수변수 선언
+  uint16_t rawVal;
+  
+  // A1 포트값을 0~1023 사이의 값으로 데이터 수집
+  rawVal = analogRead(1);
+  
+  // 전압값으로 변환
+  float vVal = rawVal * 5 / 1023.0;
+  float UVindex = vVal * 10;
+
+  Serial.println(UVindex, 3);
+  /*
+  //측정값 시리얼 모니터로 출력
+  Serial.print("Raw Value(0-1023) : ");
+  Serial.print(rawVal);
+
+  // 변환된 전압값을 소수점 3자리까지 출력
+  Serial.print(" = ");
+  Serial.print(vVal, 3);
+
+  // 전압값 x10으로 UVI 변환값 출력
+  Serial.print("[V]");
+  Serial.print(" || UV Index(0 - 10) : ");
+  Serial.println(UVindex, 3);
+  */
+  int value = analogRead(gasSensor);
+
+  //Serial.print("Gas : ");
+  Serial.println(value);
+
+  /*
+  if(value > 90){
+    Serial.print("Alert");
+    text1 = "Alert";
+  }else{
+      text1 = "Normal";
+  };
+  */
+  delay(500);
+
+}
