@@ -2,6 +2,10 @@ import time
 import serial
 import RPi.GPIO as GPIO
 from datetime import datetime
+import ctypes
+
+path = "./imu.so"
+c_module = ctypes.cdll.LoadLibrary(path)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
