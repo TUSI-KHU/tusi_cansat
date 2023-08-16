@@ -2,10 +2,12 @@ import time
 import serial
 import RPi.GPIO as GPIO
 from datetime import datetime
-import ctypes
+import subprocess
 
-path = "./imu.so"
-c_module = ctypes.cdll.LoadLibrary(path)
+#import ctypes
+
+#path = "./imu.so"
+#c_module = ctypes.cdll.LoadLibrary(path)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -56,7 +58,7 @@ packet = {"humidity": None,
           "UVdose": None,
           "UVindex": None,
           "GPS": {0, 0, 0},
-          "IMU": {0, 0, 0, 0, 0, 0},
+          "IMU": {0, 0, 0, 0, 0, 0, 0},
           "Packet_Count": 1
           }
 
@@ -71,12 +73,26 @@ while 1:
     latitude = 6
     longitude = 7
     altitude = 8
-    accel_X = 9
-    accel_Y = 10
-    accel_Z = 11
-    gyro_X = 12
-    gyro_Y = 13
-    gyro_Z = 14
+    gyroXangle = 9
+    gyroYangle = 10
+    gyroZangle = 11
+    AccYangle = 12
+    AccXangle = 13
+    CFangleX = 14
+    CFangleY = 15
+
+    # Setting imu c script as subprocess
+    imu_output = subprocess.check_output(['./gyro_accelerometer_tutorial01'])
+    imu_variable_lines = c_script_output.decode().split('\n')
+
+    # Updating IMU outputs from the imu script
+    gyroXangle = float(imu_variables_lines[0].strip())
+    gyroYangle = float(imu_variables_lines[1].strip())
+    gyroZangle = float(imu_variables_lines[2].strip())
+    AccYangle = float(imu_variables_lines[3].strip())
+    AccXangle = float(imu_variables_lines[4].strip())
+    CFangleX = float(imu_variables_lines[5].strip())
+    CFangleY = float(imu_variables_lines[6].strip())
 
     packet['humidity'] = humidity
     packet['temperature'] = temperature
@@ -85,7 +101,7 @@ while 1:
     packet['UVdose'] = UVdose
     packet['UVindex'] = UVindex
     packet['GPS'] = {latitude, longitude, altitude}
-    packet['IMU'] = {accel_X, accel_Y, accel_Z, gyro_X, gyro_Y, gyro_Z}
+    packet['IMU'] = {gyroXangle, gyroYangle, gyroZangle, AccYangle, AccXangle, CFangleX, CFangleY}
 
     curtime = datetime.today().isoformat(sep=' ', timespec = 'milliseconds')
 
